@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>정재학 말씀 자료방</title>
+<meta name="description" content="정재학 목사의 설교와 성경통독 자료를 한곳에서 찾습니다. 푸른동산 지산교회.">
+<meta property="og:title" content="정재학 말씀 자료방">
+<meta property="og:description" content="정재학 목사의 설교와 성경통독 자료를 한곳에서.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jsua83.github.io/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+  :root {
+    --paper: #fbfcfb;
+    --surface: #ffffff;
+    --brand-dark: #1f4d3a;
+    --brand: #2e7d5b;
+    --brand-accent: #4a9b73;
+    --brand-soft: #e8f2ec;
+    --ink: #23291f;
+    --ink-soft: #515b52;
+    --line: #d9e4dc;
+    --on-brand: #ffffff;
+    --serif: "Gowun Batang", "Nanum Myeongjo", serif;
+    --sans: "Noto Sans KR", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #11160f;
+      --surface: #1a2018;
+      --brand-dark: #e7f0e9;
+      --brand: #74c6a0;
+      --brand-accent: #93d6b6;
+      --brand-soft: #223027;
+      --ink: #e9ede6;
+      --ink-soft: #a6b0a5;
+      --line: #2e3a30;
+      --on-brand: #11160f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #11160f;
+    --surface: #1a2018;
+    --brand-dark: #e7f0e9;
+    --brand: #74c6a0;
+    --brand-accent: #93d6b6;
+    --brand-soft: #223027;
+    --ink: #e9ede6;
+    --ink-soft: #a6b0a5;
+    --line: #2e3a30;
+    --on-brand: #11160f;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.7;
+    font-size: 16px;
+  }
+  img { max-width: 100%; }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: saturate(1.4) blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar__inner {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0.7rem 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .wordmark {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--brand-dark);
+    letter-spacing: 0.01em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+  }
+  .wordmark::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    background: var(--brand);
+    transform: rotate(45deg);
+    display: inline-block;
+  }
+  .theme-toggle {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink-soft);
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    padding: 0.32rem 0.7rem;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .theme-toggle:hover { border-color: var(--brand-accent); color: var(--brand); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+  .wrap {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 3rem 1.3rem 4rem;
+  }
+
+  .hero {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+  }
+  .hero__photo {
+    width: 128px;
+    height: 128px;
+    flex: none;
+    object-fit: cover;
+    object-position: center 18%;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    background: var(--brand-soft);
+    box-shadow: 0 6px 20px -12px rgba(31, 77, 58, 0.5);
+  }
+  .hero__text { min-width: 0; }
+  .hero h1 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 1.3;
+    color: var(--brand-dark);
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+  .hero p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.98rem;
+  }
+
+  .rooms {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 2.6rem 0 3rem;
+  }
+  .room {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.4rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  .room:hover {
+    transform: translateY(-3px);
+    border-color: var(--brand-accent);
+    box-shadow: 0 12px 28px -14px rgba(31, 77, 58, 0.45);
+  }
+  .room:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 3px;
+  }
+  .room__mono {
+    width: 56px;
+    height: 56px;
+    border-radius: 13px;
+    background: var(--brand);
+    color: var(--on-brand);
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .room__body { min-width: 0; }
+  .room__title {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--brand-dark);
+    margin: 0 0 0.15rem;
+  }
+  .room__desc {
+    margin: 0 0 0.5rem;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+  }
+  .room__meta {
+    font-size: 0.78rem;
+    color: var(--brand);
+    letter-spacing: 0.02em;
+  }
+  .room__go {
+    font-size: 1.3rem;
+    color: var(--brand-accent);
+    font-family: var(--serif);
+  }
+
+  .section-label {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--ink-soft);
+    margin: 0 0 0.9rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .extras {
+    display: flex;
+    flex-direction: column;
+  }
+  .extra {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.85rem 0.2rem;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+    color: inherit;
+  }
+  .extra:last-child { border-bottom: none; }
+  .extra:hover .extra__name { color: var(--brand); }
+  .extra:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+  .extra__mark {
+    font-family: var(--serif);
+    color: var(--brand-accent);
+    font-size: 0.95rem;
+    flex: none;
+    width: 1.1rem;
+    text-align: center;
+  }
+  .extra__name {
+    font-weight: 500;
+    font-size: 0.98rem;
+  }
+  .extra__desc {
+    color: var(--ink-soft);
+    font-size: 0.82rem;
+  }
+
+  footer.doc {
+    margin-top: 3.2rem;
+    padding-top: 1.3rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    line-height: 1.9;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .room { transition: none; }
+    .room:hover { transform: none; }
+  }
+  @media (max-width: 460px) {
+    .wordmark { font-size: 0.95rem; }
+    .theme-toggle { font-size: 0.72rem; padding: 0.3rem 0.6rem; }
+    .hero { flex-direction: column; text-align: center; gap: 1rem; }
+    .hero__photo { width: 116px; height: 116px; }
+    .hero h1 { font-size: 1.75rem; }
+    .room { grid-template-columns: 46px 1fr; padding: 1.15rem 1.15rem; }
+    .room__mono { width: 46px; height: 46px; font-size: 1.25rem; border-radius: 11px; }
+    .room__go { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar__inner">
+    <a class="wordmark" href="https://jsua83.github.io/">정재학 말씀 자료방</a>
+    <button class="theme-toggle" id="themeToggle" type="button">밝게 / 어둡게</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="hero">
+    <img class="hero__photo" src="jeahak.jpg" alt="정재학 목사"
+         onerror="this.onerror=null;this.src=&quot;data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' fill='%23e8f2ec'/%3E%3Ccircle cx='64' cy='50' r='23' fill='%232e7d5b'/%3E%3Cpath d='M22 120c0-23 19-38 42-38s42 15 42 38z' fill='%232e7d5b'/%3E%3C/svg%3E&quot;">
+    <div class="hero__text">
+      <h1>정재학 말씀 자료방</h1>
+      <p>정재학 목사의 설교와 성경통독 자료를 한곳에서 찾습니다.</p>
+    </div>
+  </div>
+
+  <nav class="rooms" aria-label="자료방">
+    <a class="room" href="https://jsua83.github.io/serinfo/">
+      <span class="room__mono" aria-hidden="true">설</span>
+      <span class="room__body">
+        <span class="room__title">설교 인포그래픽</span>
+        <p class="room__desc">본문별 설교를 인포그래픽과 말씀문서로 정리한 자료실</p>
+        <span class="room__meta">설교문 · 인포그래픽 · 말씀 참고자료 등</span>
+      </span>
+      <span class="room__go" aria-hidden="true">&rarr;</span>
+    </a>
+
+    <a class="room" href="https://jsua83.github.io/bible/">
+      <span class="room__mono" aria-hidden="true">통</span>
+      <span class="room__body">
+        <span class="room__title">성경통독 365일</span>
+        <p class="room__desc">역사 순으로 읽는 1년 성경통독 플랜과 낭독 영상</p>
+        <span class="room__meta">조병호 365일 통독 · 공동체 읽기 낭독 영상 등</span>
+      </span>
+      <span class="room__go" aria-hidden="true">&rarr;</span>
+    </a>
+  </nav>
+
+  <h2 class="section-label">부가 자료</h2>
+  <div class="extras">
+    <a class="extra" href="https://jsua83.github.io/bible/Gospel.html">
+      <span class="extra__mark" aria-hidden="true">&#10013;</span>
+      <span class="extra__name">이렇게 복음을 전하자</span>
+      <span class="extra__desc">전도용 복음 제시 자료</span>
+    </a>
+    <a class="extra" href="https://jsua83.github.io/bible/">
+      <span class="extra__mark" aria-hidden="true">&#9654;</span>
+      <span class="extra__name">10분에 보는 성경 전체</span>
+      <span class="extra__desc">영상 + 한눈 요약</span>
+    </a>
+    <a class="extra" href="https://jsua83.github.io/bible/">
+      <span class="extra__mark" aria-hidden="true">&#9834;</span>
+      <span class="extra__name">주제별 성경암송 60구절</span>
+      <span class="extra__desc">암송 도우미</span>
+    </a>
+  </div>
+
+  <footer class="doc">
+    푸른동산 지산교회 말씀자료방
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById("themeToggle");
+    var stored;
+    try { stored = localStorage.getItem("hub-theme"); } catch (e) {}
+    if (stored === "dark" || stored === "light") root.setAttribute("data-theme", stored);
+    btn.addEventListener("click", function () {
+      var current = root.getAttribute("data-theme");
+      if (!current) {
+        current = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
+      var next = current === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      try { localStorage.setItem("hub-theme", next); } catch (e) {}
+    });
+  })();
+</script>
+
+</body>
+</html>
