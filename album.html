@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>정재학 앨범</title>
+<meta name="description" content="정재학 목사 · 푸른동산 지산교회 사진 자료실.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+  :root {
+    --paper: #fbfcfb;
+    --surface: #ffffff;
+    --brand-dark: #1f4d3a;
+    --brand: #2e7d5b;
+    --brand-accent: #4a9b73;
+    --brand-soft: #e8f2ec;
+    --ink: #23291f;
+    --ink-soft: #515b52;
+    --line: #d9e4dc;
+    --serif: "Gowun Batang", "Nanum Myeongjo", serif;
+    --sans: "Noto Sans KR", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #11160f; --surface: #1a2018; --brand-dark: #e7f0e9;
+      --brand: #74c6a0; --brand-accent: #93d6b6; --brand-soft: #223027;
+      --ink: #e9ede6; --ink-soft: #a6b0a5; --line: #2e3a30;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #11160f; --surface: #1a2018; --brand-dark: #e7f0e9;
+    --brand: #74c6a0; --brand-accent: #93d6b6; --brand-soft: #223027;
+    --ink: #e9ede6; --ink-soft: #a6b0a5; --line: #2e3a30;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.7;
+    font-size: 16px;
+  }
+  img { max-width: 100%; }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: saturate(1.4) blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar__inner {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0.7rem 1.3rem;
+  }
+  .back {
+    font-size: 0.85rem;
+    color: var(--brand);
+    text-decoration: none;
+  }
+  .back:hover { color: var(--brand-dark); }
+  .back:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+  .wrap {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2.6rem 1.3rem 5rem;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.9rem;
+    color: var(--brand-dark);
+    margin: 0 0 2rem;
+  }
+
+  #status {
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    padding: 2rem 0;
+    text-align: center;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+  }
+  .shot {
+    display: block;
+    aspect-ratio: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: var(--brand-soft);
+  }
+  .shot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.25s ease;
+  }
+  .shot:hover img { transform: scale(1.06); }
+  .shot:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shot img { transition: none; }
+    .shot:hover img { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar__inner">
+    <a class="back" href="https://jsua83.github.io/">&larr; 정재학 말씀 자료방</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <h1>정재학 앨범</h1>
+  <p id="status">사진을 불러오는 중&hellip;</p>
+  <div class="grid" id="grid"></div>
+</div>
+
+<script>
+  (function () {
+    var API = "https://api.github.com/repos/jsua83/jsua83.github.io/contents/album";
+    var IMG_RE = /\.(jpe?g|png|gif|webp)$/i;
+    var status = document.getElementById("status");
+    var grid = document.getElementById("grid");
+
+    fetch(API)
+      .then(function (res) {
+        if (res.status === 404) return [];
+        if (!res.ok) throw new Error("load failed");
+        return res.json();
+      })
+      .then(function (items) {
+        var photos = (items || [])
+          .filter(function (it) { return it.type === "file" && IMG_RE.test(it.name); })
+          .sort(function (a, b) { return a.name.localeCompare(b.name, "ko"); });
+
+        if (photos.length === 0) {
+          status.textContent = "아직 올라온 사진이 없습니다.";
+          return;
+        }
+        status.remove();
+
+        photos.forEach(function (p) {
+          var a = document.createElement("a");
+          a.className = "shot";
+          a.href = p.download_url;
+          a.target = "_blank";
+          a.rel = "noopener";
+          var img = document.createElement("img");
+          img.src = p.download_url;
+          img.loading = "lazy";
+          img.alt = p.name.replace(/\.[a-z]+$/i, "").replace(/[-_]/g, " ");
+          a.appendChild(img);
+          grid.appendChild(a);
+        });
+      })
+      .catch(function () {
+        status.textContent = "사진을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.";
+      });
+  })();
+</script>
+
+</body>
+</html>
