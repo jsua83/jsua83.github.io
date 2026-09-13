@@ -145,7 +145,7 @@
       .then(function (items) {
         var photos = (items || [])
           .filter(function (it) { return it.type === "file" && IMG_RE.test(it.name); })
-          .sort(function (a, b) { return a.name.localeCompare(b.name, "ko"); });
+          .sort(function (a, b) { return b.name.localeCompare(a.name, "ko"); });
 
         if (photos.length === 0) {
           status.textContent = "아직 올라온 사진이 없습니다.";
