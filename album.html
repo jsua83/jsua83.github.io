@@ -219,30 +219,55 @@
         status.remove();
         countLine.textContent = photos.length + "장";
 
-        var groups = [];
+        // 연도별로 모으기: 2008년부터는 연도 하나씩, 2007년 이전은 구간(2000~2007 / ~1999)으로 묶는다
         var byYear = {};
+        var miscItems = [];
         photos.forEach(function (p) {
           var m = p.name.match(YEAR_RE);
-          var year = m ? m[1] : "미분류";
-          if (!byYear[year]) {
-            byYear[year] = { year: year, items: [] };
-            groups.push(byYear[year]);
-          }
-          byYear[year].items.push(p);
+          if (!m) { miscItems.push(p); return; }
+          var y = parseInt(m[1], 10);
+          if (!byYear[y]) byYear[y] = [];
+          byYear[y].push(p);
         });
+
+        var years = Object.keys(byYear).map(Number);
+        var recentYears = years.filter(function (y) { return y >= 2008; }).sort(function (a, b) { return b - a; });
+        var midYears = years.filter(function (y) { return y >= 2000 && y < 2008; });
+        var oldYears = years.filter(function (y) { return y < 2000; });
+
+        var groups = [];
+        recentYears.forEach(function (y) {
+          groups.push({ key: String(y), label: y + "년", items: byYear[y] });
+        });
+        if (midYears.length) {
+          var midItems = [];
+          midYears.forEach(function (y) { midItems = midItems.concat(byYear[y]); });
+          groups.push({ key: "era-mid", label: "2000~2007년", items: midItems });
+        }
+        if (oldYears.length) {
+          var oldItems = [];
+          oldYears.forEach(function (y) { oldItems = oldItems.concat(byYear[y]); });
+          var minY = Math.min.apply(null, oldYears);
+          var maxY = Math.max.apply(null, oldYears);
+          var label = (minY === maxY) ? (minY + "년") : (minY + "~" + maxY + "년");
+          groups.push({ key: "era-old", label: label, items: oldItems });
+        }
+        if (miscItems.length) {
+          groups.push({ key: "misc", label: "미분류", items: miscItems });
+        }
 
         groups.forEach(function (grp) {
           var link = document.createElement("a");
-          link.href = "#y" + grp.year;
-          link.textContent = grp.year === "미분류" ? "미분류" : grp.year;
+          link.href = "#" + grp.key;
+          link.textContent = grp.label;
           yearnavInner.appendChild(link);
 
           var section = document.createElement("section");
           section.className = "year-section";
-          section.id = "y" + grp.year;
+          section.id = grp.key;
 
           var h2 = document.createElement("h2");
-          h2.textContent = (grp.year === "미분류" ? "미분류" : grp.year + "년");
+          h2.textContent = grp.label;
           var count = document.createElement("span");
           count.className = "count";
           count.textContent = grp.items.length + "장";
