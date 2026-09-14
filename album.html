@@ -66,6 +66,39 @@
   .back:hover { color: var(--brand-dark); }
   .back:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 
+  .yearnav {
+    position: sticky;
+    top: 37px;
+    z-index: 9;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .yearnav::-webkit-scrollbar { display: none; }
+  .yearnav__inner {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0.55rem 1.3rem;
+    display: inline-flex;
+    gap: 0.4rem;
+  }
+  .yearnav a {
+    flex: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.28rem 0.8rem;
+    text-decoration: none;
+  }
+  .yearnav a:hover { border-color: var(--brand-accent); color: var(--brand); }
+  .yearnav a:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+
   .wrap {
     max-width: 800px;
     margin: 0 auto;
@@ -76,6 +109,11 @@
     font-weight: 700;
     font-size: 1.9rem;
     color: var(--brand-dark);
+    margin: 0 0 0.4rem;
+  }
+  .sub {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
     margin: 0 0 2rem;
   }
 
@@ -84,6 +122,24 @@
     font-size: 0.92rem;
     padding: 2rem 0;
     text-align: center;
+  }
+
+  .year-section { scroll-margin-top: 84px; margin-bottom: 2.6rem; }
+  .year-section h2 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--brand-dark);
+    margin: 0 0 0.9rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .year-section h2 .count {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    margin-left: 0.5rem;
   }
 
   .grid {
@@ -123,18 +179,27 @@
   </div>
 </div>
 
+<nav class="yearnav" id="yearnav" hidden aria-label="연도 바로가기">
+  <div class="yearnav__inner" id="yearnavInner"></div>
+</nav>
+
 <div class="wrap">
   <h1>정재학 앨범</h1>
+  <p class="sub" id="countLine"></p>
   <p id="status">사진을 불러오는 중&hellip;</p>
-  <div class="grid" id="grid"></div>
+  <div id="sections"></div>
 </div>
 
 <script>
   (function () {
     var API = "https://api.github.com/repos/jsua83/jsua83.github.io/contents/album";
     var IMG_RE = /\.(jpe?g|png|gif|webp)$/i;
+    var YEAR_RE = /^(\d{4})-/;
     var status = document.getElementById("status");
-    var grid = document.getElementById("grid");
+    var sections = document.getElementById("sections");
+    var yearnav = document.getElementById("yearnav");
+    var yearnavInner = document.getElementById("yearnavInner");
+    var countLine = document.getElementById("countLine");
 
     fetch(API)
       .then(function (res) {
@@ -152,20 +217,58 @@
           return;
         }
         status.remove();
+        countLine.textContent = photos.length + "장";
 
+        var groups = [];
+        var byYear = {};
         photos.forEach(function (p) {
-          var a = document.createElement("a");
-          a.className = "shot";
-          a.href = p.download_url;
-          a.target = "_blank";
-          a.rel = "noopener";
-          var img = document.createElement("img");
-          img.src = p.download_url;
-          img.loading = "lazy";
-          img.alt = p.name.replace(/\.[a-z]+$/i, "").replace(/[-_]/g, " ");
-          a.appendChild(img);
-          grid.appendChild(a);
+          var m = p.name.match(YEAR_RE);
+          var year = m ? m[1] : "미분류";
+          if (!byYear[year]) {
+            byYear[year] = { year: year, items: [] };
+            groups.push(byYear[year]);
+          }
+          byYear[year].items.push(p);
         });
+
+        groups.forEach(function (grp) {
+          var link = document.createElement("a");
+          link.href = "#y" + grp.year;
+          link.textContent = grp.year === "미분류" ? "미분류" : grp.year;
+          yearnavInner.appendChild(link);
+
+          var section = document.createElement("section");
+          section.className = "year-section";
+          section.id = "y" + grp.year;
+
+          var h2 = document.createElement("h2");
+          h2.textContent = (grp.year === "미분류" ? "미분류" : grp.year + "년");
+          var count = document.createElement("span");
+          count.className = "count";
+          count.textContent = grp.items.length + "장";
+          h2.appendChild(count);
+          section.appendChild(h2);
+
+          var grid = document.createElement("div");
+          grid.className = "grid";
+          grp.items.forEach(function (p) {
+            var a = document.createElement("a");
+            a.className = "shot";
+            a.href = p.download_url;
+            a.target = "_blank";
+            a.rel = "noopener";
+            var img = document.createElement("img");
+            img.src = p.download_url;
+            img.loading = "lazy";
+            img.alt = p.name.replace(/\.[a-z]+$/i, "").replace(/[-_]/g, " ");
+            a.appendChild(img);
+            grid.appendChild(a);
+          });
+          section.appendChild(grid);
+          sections.appendChild(section);
+        });
+
+        yearnav.hidden = false;
       })
       .catch(function () {
         status.textContent = "사진을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.";
