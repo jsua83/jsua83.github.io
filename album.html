@@ -192,7 +192,10 @@
 
 <script>
   (function () {
-    var API = "https://api.github.com/repos/jsua83/jsua83.github.io/contents/album";
+    // 폴더 목록 API(contents)는 1,000개 넘으면 최근 파일을 조용히 잘라버려서,
+    // 저장소 전체 파일목록을 한 번에 주는 트리 API로 가져온다 (개수 제한 훨씬 큼).
+    var API = "https://api.github.com/repos/jsua83/jsua83.github.io/git/trees/main?recursive=1";
+    var SITE = "https://jsua83.github.io/";
     var IMG_RE = /\.(jpe?g|png|gif|webp)$/i;
     var YEAR_RE = /^(\d{4})-/;
     var status = document.getElementById("status");
@@ -203,13 +206,19 @@
 
     fetch(API)
       .then(function (res) {
-        if (res.status === 404) return [];
         if (!res.ok) throw new Error("load failed");
         return res.json();
       })
-      .then(function (items) {
-        var photos = (items || [])
-          .filter(function (it) { return it.type === "file" && IMG_RE.test(it.name); })
+      .then(function (data) {
+        var items = (data && data.tree) || [];
+        var photos = items
+          .filter(function (it) {
+            return it.type === "blob" && it.path.indexOf("album/") === 0 && IMG_RE.test(it.path);
+          })
+          .map(function (it) {
+            var fileName = it.path.slice("album/".length);
+            return { name: fileName, download_url: SITE + it.path };
+          })
           .sort(function (a, b) { return b.name.localeCompare(a.name, "ko"); });
 
         if (photos.length === 0) {
